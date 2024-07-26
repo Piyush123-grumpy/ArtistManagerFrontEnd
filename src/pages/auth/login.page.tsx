@@ -4,6 +4,8 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import ButtonComponent from "../../../src/components/forms/button.component";
 import { Link } from "react-router-dom";
 import AuthRepo from "../../repositories/auth.repo"
+import { signIn } from "../../store/slicers/auth.slicer";
+import { useAppDispatch } from "../../store/hooks";
 const Page = () => {
 
     const {
@@ -14,14 +16,26 @@ const Page = () => {
         // setError,
     } = useForm<FieldValues>();
 
+    const dispatch=useAppDispatch()
+
     const _authRepo=new AuthRepo()
 
     const onLogin: SubmitHandler<FieldValues> = async(loginData) => {
-        console.log(loginData);
         try{
             const {data}=await _authRepo.login(loginData)
-        }catch{
-
+            dispatch(signIn({
+                token:data.access_token,
+                id:data.id,
+                first_name:data.user.first_name,
+                last_name:data.user.last_name,
+                email:data.user.email,
+                refresh_token:data.refresh_token
+            }))
+            
+            // _authRepo.notifySuccess('kra')
+        }catch(err:any){
+            console.log(err);
+            _authRepo.notifyError(err.response.data.detail)
         }
 
     }

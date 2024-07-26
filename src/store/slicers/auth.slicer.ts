@@ -5,7 +5,6 @@ export interface AuthState {
   first_name: string | undefined;
   last_name:string | undefined;
   email: string | undefined;
-  password: string | undefined;
   gender:string|undefined;
   dob:string|undefined;
   address:string|undefined;
@@ -20,7 +19,6 @@ const initialState: AuthState = {
   first_name:  undefined,
   last_name: undefined,
   email: undefined,
-  password: undefined,
   gender:undefined,
   dob:undefined,
   address:undefined,
@@ -41,7 +39,6 @@ const AuthSlice = createSlice({
       state.first_name=undefined;
       state.last_name=undefined;
       state.email=undefined;
-      state.password=undefined;
       state.refresh_token=undefined;
       state.token = undefined;
       state.isAuthenticated = false;

@@ -3,24 +3,59 @@ import InputComponent from '../../../src/components/forms/input.components';
 import React, { useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import SelectComponent from '../../../src/components/forms/select.component';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import OptionItem from '@/types/option-item.type';
 import DateTimePicker from '../../../src//components/forms/datepicker.component';
+import AuthRepo from "../../repositories/auth.repo"
 
 const Page = () => {
+
+    const nav = useNavigate()
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        // reset,
+        reset,
         getValues,
         control,
-        // setError,
+        setError,
     } = useForm<FieldValues>();
 
-    const onRegister: SubmitHandler<FieldValues> = (data) => {
-        console.log(data);
+    const _authRepo = new AuthRepo()
+
+    const onRegister: SubmitHandler<FieldValues> = async (registerData) => {
+
+        try {
+            const { data } = await _authRepo.register(registerData)
+            _authRepo.notifySuccess(data.message)
+            reset()
+            nav('/auth/login')
+
+        } catch (err: any) {
+            console.log( Object.entries(err.response.data));
+            const [key, value] = Object.entries(err.response.data.detail)[0];
+           
+            
+            setError(key, {
+                type: "custom",
+                message: typeof(value)=='string'?value:'red'
+            })
+
+            // if (err.response.data.detail.message) {
+            //     _authRepo.notifyError(err.response.data.detail.message);
+            //     setError(err.response.data.detail.inputField, {
+            //         type: "custom",
+            //         message: err.response.data.detail.message,
+            //     });
+            // } else {
+            //     console.log('xiryo');
+
+            //     _authRepo.notifyError(err.response.data.detail)
+
+            // }
+
+        }
 
     }
 
@@ -49,6 +84,28 @@ const Page = () => {
                     </div>
                     <div>
                         <form onSubmit={handleSubmit(onRegister)}>
+                            <label >First Name</label>
+                            <InputComponent
+                                id={'first_name'}
+                                errors={errors}
+                                register={register}
+                                classes="h-[40px] !bg-black !text-white"
+                                validation={{
+                                    required: 'First Name is required',
+                                }}
+                                placeholder="First Name"
+                            />
+                            <label >Last Name</label>
+                            <InputComponent
+                                id={'last_name'}
+                                errors={errors}
+                                register={register}
+                                classes="h-[40px] !bg-black !text-white"
+                                validation={{
+                                    required: 'Last Name is required',
+                                }}
+                                placeholder="Last Name"
+                            />
                             <label>Email</label>
                             <InputComponent
                                 id={'email'}
@@ -98,7 +155,7 @@ const Page = () => {
                             />
                             <label>Phone number</label>
                             <InputComponent
-                                id={'Phone'}
+                                id={'phone'}
                                 type="number"
                                 errors={errors}
                                 register={register}
@@ -110,7 +167,7 @@ const Page = () => {
                             />
                             <label>Address</label>
                             <InputComponent
-                                id={'Address'}
+                                id={'address'}
                                 type="text"
                                 errors={errors}
                                 register={register}
@@ -127,7 +184,7 @@ const Page = () => {
                                 classes="w-full bg-black text-white"
                                 options={genderOptions}
                                 label={'Select Gender'}
-                                id={"gender-select"}
+                                id={"gender_select"}
                                 defaultlabel={"Select Gender"}
                                 register={register}
                                 validation={
@@ -138,7 +195,7 @@ const Page = () => {
                                 errors={errors}
                             />
                             <label>Date Of birth</label>
-                            <DateTimePicker errors={errors} control={control} name="dateTime" label="Select Date & Time" />
+                            <DateTimePicker errors={errors} control={control} name="date_time" label="Select Date & Time" />
                             <ButtonComponent
                                 loading={loading}
                                 label='Register'

@@ -13,8 +13,8 @@ const notification = {
                 </div>
               )}
               <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-green-700">Success</p>
-                <p className="mt-1 text-sm text-gray-500">{message}</p>
+                <p className="text-sm font-bold text-white">Success</p>
+                <p className="mt-1 text-sm text-white">{message}</p>
               </div>
             </div>
           </div>
@@ -30,8 +30,9 @@ const notification = {
       ),
       {
         style: {
-          border: "1px solid #15803d",
-          color: "#15803d",
+          border: "1px solid black",
+          color: "white",
+          background:"#28282B"
         },
       }
     );

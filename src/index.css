@@ -17,6 +17,8 @@ input[type=number] {
 input:-webkit-autofill {
     background-color: black !important; /* Change to desired background color */
     color: white !important; /* Change to desired text color */
+    -webkit-text-fill-color: white;
+    caret-color: #fff;
     /* Change to desired border color */
 }
 

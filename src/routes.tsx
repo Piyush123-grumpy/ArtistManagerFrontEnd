@@ -29,8 +29,7 @@ function ApplicationRoutes() {
   const location = useLocation();
   return (
     <Routes location={location} key={location.pathname}>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/records" element={<RecordsPage />} />
+      <Route path="/" element={<RecordsPage />} />
       <Route path="/artist" element={<ArtistPage />} />
       <Route path="/music" element={<MusicPage />} />
       <Route path="/*" element={<Navigate to="/" />} />

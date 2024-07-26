@@ -13,6 +13,9 @@ const EditIcon = (setOpenModal) => (
     </svg>
 );
 const Page = () => {
+
+    
+
     return (
         <div className="my-3xl my-2 text-white">
             <div className="mt-12">
