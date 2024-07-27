@@ -35,6 +35,16 @@ const Sidebar = () => {
             </p>
           </div>
         </Link>
+        <Link to="/excel" className="mx-3 block p-2 hover:bg-zinc-800">
+          <div className="flex">
+            <div className="mx-2">
+            <i className="fa-solid fa-file-excel"></i>
+            </div>
+            <p className="text-sm mx-2 font-bold">
+              Import Artists
+            </p>
+          </div>
+        </Link>
         <Link
           onClick={() => {
             dispatch(signOut());

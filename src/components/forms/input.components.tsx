@@ -67,7 +67,8 @@ const InputComponent = ({
           return true;
         } else {
           if (value !== null) {
-            return !!value.trim() || "Value can not be whitespace";
+            
+            return !!String(value).trim() || "Value can not be whitespace";
           }
         }
         // return !!value.trim() || "Value can not be whitespace";

@@ -7,6 +7,7 @@ const RegisterPage = loadable(() => import("./pages/auth/register.page"));
 const ArtistPage=loadable(()=> import('./pages/admin/artists.page'))
 const HomePage = loadable(() => import("./pages/home.page"));
 const MusicPage=loadable(()=>import('./pages/admin/music.page'))
+const ExcelPage=loadable(()=>import('./pages/admin/excel.page'))
 // const AboutPage = loadable(() => import("./pages/about.page"));
 // const CampaignListPage = loadable(() => import("./pages/campaigns/index.page"));
 // const AlertPage = loadable(() => import("./pages/alerts.page"));
@@ -31,7 +32,8 @@ function ApplicationRoutes() {
     <Routes location={location} key={location.pathname}>
       <Route path="/" element={<RecordsPage />} />
       <Route path="/artist" element={<ArtistPage />} />
-      <Route path="/music" element={<MusicPage />} />
+      <Route path="/music/:artistId" element={<MusicPage />} />
+      <Route path="/excel" element={<ExcelPage />} />
       <Route path="/*" element={<Navigate to="/" />} />
     </Routes>
   );

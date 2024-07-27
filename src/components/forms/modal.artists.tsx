@@ -1,62 +1,102 @@
-import {  Modal } from "flowbite-react";
-import { useState } from "react";
+import { Modal } from "flowbite-react";
+import { useEffect, useState } from "react";
 import InputComponent from "./input.components";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import SelectComponent from "./select.component";
 import OptionItem from "@/types/option-item.type";
 import ButtonComponent from "./button.component";
 import DateTimePicker from "./datepicker.component";
+import ArtistRepo from "../../repositories/artist.repo";
 
 
 export function ArtistModalCrud(props) {
 
-    const { icon, label, type } = props
+    const { icon, label, type, id, setRefetch} = props
 
     const [openModal, setOpenModal] = useState(false);
-    const [email, setEmail] = useState('');
+
+    const [loading, setLoading] = useState<boolean>(false)
+
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         control,
-        // reset,
+        reset,
+        setValue,
         // setError,
     } = useForm<FieldValues>();
 
-    const onLogin: SubmitHandler<FieldValues> = (data) => {
-        console.log(data);
+    const _artistRepo = new ArtistRepo()
 
+    const onSubmit: SubmitHandler<FieldValues> = async (submitData) => {
+        if (id) {
+            try {
+                setLoading(true)
+                const { data } = await _artistRepo.updateArtistById(submitData, id)
+                _artistRepo.notifySuccess(data.message)
+
+            } catch (err: any) {
+
+            } finally {
+                setLoading(false)
+            }
+
+        } else {
+            try {
+                setLoading(true)
+                const { data } = await _artistRepo.createArtist(submitData)
+                reset()
+                _artistRepo.notifySuccess('Artist Created')
+            } catch (err: any) {
+
+            } finally {
+                setLoading(false)
+            }
+        }
+        setRefetch((prevData) => prevData + 1)
     }
 
-    const [genre, setGenre] = useState<OptionItem[]>([{
-        label: 'RNB',
-        value: 'rnb'
+    const [genderOptions, setGenderOptions] = useState<OptionItem[]>([{
+        label: 'Male',
+        value: 'm'
     },
     {
-        label: 'Country',
-        value: 'country'
+        label: 'Female',
+        value: 'f'
     },
     {
-        label: 'Classic',
-        value: 'classic'
-    },
-    {
-        label: 'Rock',
-        value: 'rock'
-    },
-    {
-        label: 'Jazz',
-        value: 'jazz'
+        label: 'Others',
+        value: 'o'
     }
     ])
 
-    const [loading, setLoading] = useState<boolean>(false)
-
     function onCloseModal() {
         setOpenModal(false);
-        setEmail('');
     }
+
+    const getArtistById = async (id) => {
+        try {
+            const { data } = await _artistRepo.getArtistById(id)
+            Object.keys(data).map((key) => {
+                setValue(key, data[key])
+            })
+
+
+        } catch {
+
+        }
+    }
+
+    useEffect(() => {
+        if (id  ) {
+            if (openModal == true) {
+                getArtistById(id)
+            }
+        }
+
+    }, [openModal])
 
     return (
         <>
@@ -66,86 +106,77 @@ export function ArtistModalCrud(props) {
                 <Modal.Body className="bg-[#121212] !overflow-visible">
                     <div className="">
                         <h3 className="text-xl font-medium text-white dark:text-white">{label} {type}</h3>
-                        <div className="my-2">
-                            <label className="text-white text-sm">Name</label>
-                            <InputComponent
-                                id={'Title'}
-                                errors={errors}
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className="my-2">
+                                <label className="text-white text-sm">Name</label>
+                                <InputComponent
+                                    id={'name'}
+                                    errors={errors}
+                                    register={register}
+                                    classes="h-[40px] !bg-black !text-white"
+                                    validation={{
+                                        required: 'Name is required',
+                                    }}
+                                    placeholder="Artist Name"
+                                />
+                            </div>
+                            <div className="my-2">
+                                <label className="text-white text-sm">Address</label>
+                                <InputComponent
+                                    id={'address'}
+                                    type="text"
+                                    errors={errors}
+                                    register={register}
+                                    classes=" h-[40px] !bg-black !text-white"
+                                    validation={{
+                                        required: 'Address is required'
+                                    }}
+                                    placeholder="Address"
+                                />
+                            </div>
+                            <div className="my-2">
+                                <label className="text-white text-sm">Number of albums released</label>
+                                <InputComponent
+                                    type="number"
+                                    id={'no_of_albums_released'}
+                                    errors={errors}
+                                    register={register}
+                                    classes="h-[40px] !bg-black !text-white"
+                                    validation={{
+                                        required: 'Number of albums is required',
+                                    }}
+                                    placeholder="Number of albums"
+                                />
+                            </div>
+                            <SelectComponent
+                                labelclass="block mb-2 text-sm font-medium text-white mr-2"
+                                outerboxclass={`custom-select inline-block relative custom-top text-gray-700w w-full md:w-auto`}
+                                classes="w-full bg-black text-white"
+                                options={genderOptions}
+                                label={'Select Gender'}
+                                id={"gender"}
+                                defaultlabel={"Select gender"}
                                 register={register}
-                                classes="h-[40px] !bg-black !text-white"
-                                validation={{
-                                    required: 'Title is required',
-                                }}
-                                placeholder="Artist Name"
-                            />
-                        </div>
-                        <div className="my-2">
-                            <label className="text-white text-sm">Album Name</label>
-                            <InputComponent
-                                id={'AlbumName'}
-                                errors={errors}
-                                register={register}
-                                classes="h-[40px] !bg-black !text-white"
-                                validation={{
-                                    required: 'Album Name is required',
-                                }}
-                                placeholder="Album Name"
-                            />
-                        </div>
-                        <div className="my-2">
-                            <label className="text-white text-sm">Address</label>
-                            <InputComponent
-                                id={'Address'}
-                                type="text"
-                                errors={errors}
-                                register={register}
-                                classes=" h-[40px] !bg-black !text-white"
-                                validation={{
-                                    required: 'Address is required'
-                                }}
-                                placeholder="Address"
-                            />
-                        </div>
-                        <div className="my-2">
-                            <label className="text-white text-sm">Number of albums released</label>
-                            <InputComponent
-                                type="number"
-                                id={'numberOfAlbums'}
-                                errors={errors}
-                                register={register}
-                                classes="h-[40px] !bg-black !text-white"
-                                validation={{
-                                    required: 'Number of albums is required',
-                                }}
-                                placeholder="Number of albums"
-                            />
-                        </div>
-                        <SelectComponent
-                            labelclass="block mb-2 text-sm font-medium text-white mr-2"
-                            outerboxclass={`custom-select inline-block relative custom-top text-gray-700w w-full md:w-auto`}
-                            classes="w-full bg-black text-white"
-                            options={genre}
-                            label={'Select Gender'}
-                            id={"Genre-select"}
-                            defaultlabel={"Select Gender"}
-                            register={register}
-                            validation={
-                                {
-                                    required: { value: true, message: "Select a Gender" },
+                                validation={
+                                    {
+                                        required: { value: true, message: "Select a Gender" },
+                                    }
                                 }
-                            }
-                            errors={errors}
-                        />
-                        <label className="text-white text-sm">Date Of birth</label>
-                        <DateTimePicker errors={errors} control={control} name="dateTime" label="Select Date & Time" />
-                        <ButtonComponent
-                            loading={loading}
-                            label='Save'
-                            type='submit'
-                            classes="!bg-white !text-black !mx-auto !my-7 !px-16 !h-[40px] hover:scale-110"
-                            buttontext="font-semibold text-md"
-                        />
+                                errors={errors}
+                            />
+                            <label className="text-white text-sm">Date Of birth</label>
+                            <DateTimePicker errors={errors} control={control} name="dob" label="Select Date & Time" />
+                            <ButtonComponent
+                                loading={loading}
+                                label='Save'
+                                type='submit'
+                                classes="!bg-white !text-black !mx-auto !my-7 !px-16 !h-[40px] hover:scale-110"
+                                buttontext="font-semibold text-md"
+                            />
+                        </form>
+
                     </div>
+
                 </Modal.Body>
             </Modal>
         </>
