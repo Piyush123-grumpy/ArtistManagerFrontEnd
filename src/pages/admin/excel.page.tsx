@@ -45,10 +45,10 @@ function App() {
 
             </div>
             <hr />
-            <div className='flex justify-center items-center'>
+            {/* <div className='flex justify-center items-center'>
                 <p className='text-white pt-4'>Download a sample file ?</p>
                 <a className='px-4 py-2' href="/Book1.xlsx" download><button className='bg-white mt-4 px-4 py-2 mx-8 rounded-md'>Download</button></a>
-            </div>
+            </div> */}
         </div>
     );
 }
