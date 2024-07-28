@@ -22,20 +22,21 @@ const Page = () => {
 
     const onLogin: SubmitHandler<FieldValues> = async(loginData) => {
         try{
+            setLoading(true)
             const {data}=await _authRepo.login(loginData)
             dispatch(signIn({
                 token:data.access_token,
-                id:data.id,
+                id:data.user.id,
                 first_name:data.user.first_name,
                 last_name:data.user.last_name,
                 email:data.user.email,
                 refresh_token:data.refresh_token
             }))
-            
-            // _authRepo.notifySuccess('kra')
         }catch(err:any){
             console.log(err);
             _authRepo.notifyError(err.response.data.detail)
+        }finally{
+            setLoading(false)
         }
 
     }

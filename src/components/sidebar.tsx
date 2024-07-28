@@ -18,8 +18,8 @@ const Sidebar = () => {
             <div className="mx-2">
               <i className="fa-solid fa-record-vinyl"></i>
             </div>
-            <p className="text-sm font-bold ">
-              User records
+            <p className="text-sm font-bold ml-2">
+              User 
             </p>
           </div>
         </Link>

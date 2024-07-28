@@ -1,6 +1,6 @@
 import ButtonComponent from '../../../src/components/forms/button.component';
 import InputComponent from '../../../src/components/forms/input.components';
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import SelectComponent from '../../../src/components/forms/select.component';
 import { Link, useNavigate } from 'react-router-dom';
@@ -27,39 +27,38 @@ const Page = () => {
     const onRegister: SubmitHandler<FieldValues> = async (registerData) => {
 
         try {
+            setLoading(true)
             const { data } = await _authRepo.register(registerData)
             _authRepo.notifySuccess(data.message)
             reset()
             nav('/auth/login')
 
         } catch (err: any) {
-            console.log( Object.entries(err.response.data));
-            const [key, value] = Object.entries(err.response.data.detail)[0];
-           
-            
-            setError(key, {
-                type: "custom",
-                message: typeof(value)=='string'?value:'red'
-            })
+            console.log(err.response.data);
+            if (Array.isArray(err.response.data.detail)){
+                err.response.data.detail.forEach((element)=>{                         
+                    setError(element.loc[1], {
+                        type: "custom",
+                        message: element.msg
+                    })
+                })
 
-            // if (err.response.data.detail.message) {
-            //     _authRepo.notifyError(err.response.data.detail.message);
-            //     setError(err.response.data.detail.inputField, {
-            //         type: "custom",
-            //         message: err.response.data.detail.message,
-            //     });
-            // } else {
-            //     console.log('xiryo');
+            }else{
+                const [key, value] = Object.entries(err.response.data.detail)[0];
+                setError(key, {
+                    type: "custom",
+                    message: typeof(value)=='string'?value:'red'
+                })
 
-            //     _authRepo.notifyError(err.response.data.detail)
-
-            // }
-
+            }
+        }
+        finally{
+            setLoading(false)
         }
 
     }
 
-    const [genderOptions, setGenderOptions] = useState<OptionItem[]>([{
+    const genderOptions:OptionItem[] =([{
         label: 'Male',
         value: 'm'
     },
@@ -116,7 +115,7 @@ const Page = () => {
                                     required: 'Email is required',
                                     pattern: {
                                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: "invalid email address"
+                                        message: "Invalid email address"
                                     }
                                 }}
                                 placeholder="Email"

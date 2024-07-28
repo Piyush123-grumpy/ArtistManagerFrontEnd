@@ -7,6 +7,7 @@ import OptionItem from "@/types/option-item.type";
 import ButtonComponent from "./button.component";
 import DateTimePicker from "./datepicker.component";
 import ArtistRepo from "../../repositories/artist.repo";
+import { years } from "../utils/years";
 
 
 export function ArtistModalCrud(props) {
@@ -38,7 +39,7 @@ export function ArtistModalCrud(props) {
                 _artistRepo.notifySuccess(data.message)
 
             } catch (err: any) {
-
+                _artistRepo.notifyError('Error updating artist')
             } finally {
                 setLoading(false)
             }
@@ -58,7 +59,7 @@ export function ArtistModalCrud(props) {
         setRefetch((prevData) => prevData + 1)
     }
 
-    const [genderOptions, setGenderOptions] = useState<OptionItem[]>([{
+    const genderOptions:OptionItem[]= [{
         label: 'Male',
         value: 'm'
     },
@@ -70,7 +71,7 @@ export function ArtistModalCrud(props) {
         label: 'Others',
         value: 'o'
     }
-    ])
+    ]
 
     function onCloseModal() {
         setOpenModal(false);
@@ -82,10 +83,8 @@ export function ArtistModalCrud(props) {
             Object.keys(data).map((key) => {
                 setValue(key, data[key])
             })
-
-
-        } catch {
-
+        } catch(err:any) {
+            _artistRepo.notifyError('Error fetchign artist')
         }
     }
 
@@ -148,6 +147,22 @@ export function ArtistModalCrud(props) {
                                     placeholder="Number of albums"
                                 />
                             </div>
+                            <SelectComponent
+                                labelclass="block mb-2 text-sm font-medium text-white mr-2"
+                                outerboxclass={`custom-select inline-block relative custom-top text-gray-700w w-full md:w-auto`}
+                                classes="w-full bg-black text-white"
+                                options={years}
+                                label={'First Release Year'}
+                                id={"first_release_year"}
+                                defaultlabel={"First Release Year"}
+                                register={register}
+                                validation={
+                                    {
+                                        required: { value: true, message: "Select a Year" },
+                                    }
+                                }
+                                errors={errors}
+                            />
                             <SelectComponent
                                 labelclass="block mb-2 text-sm font-medium text-white mr-2"
                                 outerboxclass={`custom-select inline-block relative custom-top text-gray-700w w-full md:w-auto`}

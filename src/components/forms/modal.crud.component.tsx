@@ -1,4 +1,4 @@
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import { Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
 import InputComponent from "./input.components";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -41,11 +41,8 @@ export function RecordModalCrud(props) {
     } else {
       try {
         setLoading(true)
-        console.log('here');
-        
         submitData['artist_id']=artistId
-        console.log(submitData);
-        
+      
         const { data } = await _musicRepo.createMusic(submitData)
         reset()
         setRefetch((prevData) => prevData + 1)
@@ -59,7 +56,7 @@ export function RecordModalCrud(props) {
 
   }
 
-  const [genre, setGenre] = useState<OptionItem[]>([{
+  const genre:OptionItem[] = [{
     label: 'RNB',
     value: 'rnb'
   },
@@ -79,7 +76,7 @@ export function RecordModalCrud(props) {
     label: 'Jazz',
     value: 'jazz'
   }
-  ])
+  ]
 
   const [loading, setLoading] = useState<boolean>(false)
 

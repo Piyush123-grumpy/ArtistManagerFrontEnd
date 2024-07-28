@@ -3,18 +3,9 @@ import { ArtistModalCrud } from "../../../src/components/forms/modal.artists";
 import { useEffect, useState } from "react";
 import ArtistRepo from "../../repositories/artist.repo";
 import Pagination from "../../../src/components/forms/pagination";
+import { AddIcon } from "./components/add_and_edit_icon";
+import { EditIcon } from "./components/add_and_edit_icon";
 
-const AddIcon = (setOpenModal) => (
-    <svg onClick={() => setOpenModal(true)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-    </svg>
-
-)
-const EditIcon = (setOpenModal) => (
-    <svg onClick={() => setOpenModal(true)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 cursor-pointer hover:text-blue-400">
-        <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-    </svg>
-);
 
 
 type Artist = {
@@ -23,6 +14,7 @@ type Artist = {
     gender: string;
     address: string;
     no_of_albums_released: number;
+    first_release_year: string;
     dob: string; // Use string to represent the ISO date format
 }
 
@@ -35,6 +27,8 @@ const Page = () => {
 
     const [refetch, setRefetch] = useState<number>(0)
 
+
+    //pagination states
     const [showPagination, setShowPagination] = useState<boolean>(true);
 
     const [page, setPage] = useState<number>(1);
@@ -43,7 +37,7 @@ const Page = () => {
 
     const [count, setCount] = useState<number>(0);
 
-
+    //methods for calling and deleting data
     const getArtists = async (page) => {
         try {
             const { data } = await _artistRepo.getArtists(page)
@@ -53,7 +47,7 @@ const Page = () => {
             setShowPagination(true)
 
         } catch (err: any) {
-
+            _artistRepo.notifyError("Could not fetchArtist's")
         }
     }
     const deleteById = async (id) => {
@@ -62,7 +56,7 @@ const Page = () => {
             setArtistData(deletedData)
             const { data } = await _artistRepo.deleteArtistById(id)
             _artistRepo.notifySuccess(data.message)
-            setRefetch((prev)=>prev +1)
+            setRefetch((prev) => prev + 1)
         } catch (err: any) {
             _artistRepo.notifySuccess(err.response.detail.data)
         }
@@ -103,16 +97,20 @@ const Page = () => {
                                 </th>
                                 {/* <th scope="col" className="px-6 py-3">
                                     First Year of Release
-                                </th> */}
+                                    </th> */}
                                 <th scope="col" className="px-6 py-3">
                                     No of Albums Released
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    First Release Year
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="">
+                        {artistData.length !== 0 ? <tbody className="">
+
                             {artistData.map((data, idx) => {
                                 return <>
                                     <tr key={idx} className="bg-[#121212] text-white dark:bg-gray-800 dark:border-gray-700">
@@ -131,12 +129,9 @@ const Page = () => {
                                         <td className="px-6 py-4">
                                             {data.no_of_albums_released}
                                         </td>
-                                        {/* <td className="px-6 py-4">
-                                            Laptop
-                                        </td>
                                         <td className="px-6 py-4">
-                                            Laptop
-                                        </td> */}
+                                            {data.first_release_year}
+                                        </td>
                                         <td className="px-6 py-4 flex">
                                             <Link to={`/music/${data.id}`}>
                                                 <div>
@@ -158,8 +153,13 @@ const Page = () => {
                                 </>
                             })}
 
-                        </tbody>
+                        </tbody> : <>
+                            <div className="w-full m-6 text-white">
+                                No data found
+                            </div></>}
+
                     </table>
+
                     {showPagination ? (
                         <Pagination
                             lastPage={lastPage}

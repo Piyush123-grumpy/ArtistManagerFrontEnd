@@ -1,6 +1,6 @@
 import { ApplicationRoutes } from "../routes";
 // import Navbar from "../../src/components/navbar";
-import Sidebar from "./sidebar";
+import Sidebar from "../components/sidebar";
 
 const MainLayout = () => {
   return (

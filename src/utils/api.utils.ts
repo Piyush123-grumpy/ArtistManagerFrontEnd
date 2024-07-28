@@ -33,12 +33,6 @@ export const useApiClient = () => {
     headers,
   });
 
-  // const  getToken=async ()=>{
-  //   const {token } = useAppSelector((state) => state.auth);
-  //   return token
-
-  // }
-
   const refreshAccessToken = async () => {
     try {
       const { data } = await useApiClient.get(
@@ -60,6 +54,7 @@ export const useApiClient = () => {
     function (config) {
       // Do something before request is sent
       dispatch(setGlobalLoading(true));
+     
 
       return config;
     },
@@ -80,12 +75,16 @@ export const useApiClient = () => {
 
       const originalRequest: AxiosRequestConfig = error.config;
       if (error.response.status === 401) {
+      
+        
         if (error.response.detail === "Refresh Tokens do not match") {
           dispatch(signOut());
         } else {
           if (!isRefreshing) {
             isRefreshing = true;
             try {
+              console.log('here WITH ME');
+              
               const newAccessToken = await refreshAccessToken();
               error.config.headers[
                 "Authorization"
@@ -118,17 +117,6 @@ export const useApiClient = () => {
       }
 
       return Promise.reject(error);
-      // if (error.response.status === 401 && !originalRequest._retry) {
-      //   originalRequest._retry = true;
-      //   return refreshAccessToken()
-      //     .then((token) => {
-      //       originalRequest.headers.Authorization = `Bearer ${token}`;
-      //       return axios(originalRequest);
-      //     })
-      //     .catch(() => {
-      //       dispatch(signOut());
-      //     });
-      // }
     }
   );
 

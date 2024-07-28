@@ -1,5 +1,5 @@
-import AuthLayout from "./components/auth-layout";
-import MainLayout from "./components/main-layout";
+import AuthLayout from "./layout/auth-layout";
+import MainLayout from "./layout/main-layout";
 import { useAppSelector } from "./store/hooks";
 
 function Application() {
@@ -11,7 +11,6 @@ function Application() {
 
   if (isAuthenticated) return <MainLayout />;
   return <AuthLayout />;
-  // return <MainLayout />;
 }
 
 export default Application;
