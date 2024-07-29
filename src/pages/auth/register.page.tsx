@@ -8,6 +8,16 @@ import OptionItem from '@/types/option-item.type';
 import DateTimePicker from '../../../src//components/forms/datepicker.component';
 import AuthRepo from "../../repositories/auth.repo"
 
+const LoginLink = ({ loading }) => (
+    <div className="mx-4 text-sm hover:text-gray-500">
+        {loading ? (
+            <p>Login to Artist Manager</p>
+        ) : (
+            <Link to="/auth/login">Login to Artist Manager</Link>
+        )}
+    </div>
+);
+
 const Page = () => {
 
     const nav = useNavigate()
@@ -208,10 +218,8 @@ const Page = () => {
                     <hr className="color-white my-5" />
                     <div className="flex">
                         <p className="text-sm">Already have an account ?</p>
-                        <Link to='/auth/login'>
-                            <p className="mx-4 text-sm hover:text-gray-500">Login to Artist Manager</p>
-                        </Link>
-
+                        <LoginLink loading={loading}/>
+                        
                     </div>
                 </div>
 
