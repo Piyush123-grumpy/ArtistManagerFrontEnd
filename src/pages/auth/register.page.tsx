@@ -11,7 +11,7 @@ import AuthRepo from "../../repositories/auth.repo"
 const LoginLink = ({ loading }) => (
     <div className="mx-4 text-sm hover:text-gray-500">
         {loading ? (
-            <p>Login to Artist Manager</p>
+            <p className='hover:cursor-not-allowed'>Login to Artist Manager</p>
         ) : (
             <Link to="/auth/login">Login to Artist Manager</Link>
         )}
