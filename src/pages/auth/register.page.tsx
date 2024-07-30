@@ -101,6 +101,10 @@ const Page = () => {
                                 classes="h-[40px] !bg-black !text-white"
                                 validation={{
                                     required: 'First Name is required',
+                                    pattern: {
+                                        value: /^[A-Za-z]+$/,
+                                        message: 'First Name must contain only letters'
+                                    }
                                 }}
                                 placeholder="First Name"
                             />
@@ -112,6 +116,10 @@ const Page = () => {
                                 classes="h-[40px] !bg-black !text-white"
                                 validation={{
                                     required: 'Last Name is required',
+                                    pattern: {
+                                        value: /^[A-Za-z]+$/,
+                                        message: 'Last Name must contain only letters'
+                                    }
                                 }}
                                 placeholder="Last Name"
                             />
